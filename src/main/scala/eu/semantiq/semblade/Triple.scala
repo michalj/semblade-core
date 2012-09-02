@@ -22,8 +22,10 @@ case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
  * @param subject URI of object described by the triple.
  * @param verb URI of object verb described by the triple.
  * @param `object` URI or literal value of object verb.
+ * @param positive is the Triple positive (true by default)
  */
-case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode, positive: Boolean) {
+case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
+    positive: Boolean = true) {
   def toTripleString: String = (if (positive) "" else "not ") + subject.toNodeString + " " + verb.toNodeString + " " + obj.toNodeString + "."
 }
 
