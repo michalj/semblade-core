@@ -4,6 +4,7 @@ import collection._
 
 abstract class Node {
   def toNodeString: String
+  def toNodeString(ps: IPrefixStore): PrefixedNode = PrefixedNode(toNodeString, None)
 }
 abstract class ConcreteNode extends Node
 case class VariableNode(variable: String) extends Node {
@@ -11,6 +12,7 @@ case class VariableNode(variable: String) extends Node {
 }
 case class UriNode(uri: String) extends ConcreteNode {
   def toNodeString = "<" + uri + ">"
+  override def toNodeString(ps: IPrefixStore) = ps(this)
 }
 case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
   def toNodeString = "\"" + value + "\"^" + typeUri //TODO: encode string
@@ -21,12 +23,23 @@ case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
  *
  * @param subject URI of object described by the triple.
  * @param verb URI of object verb described by the triple.
- * @param `object` URI or literal value of object verb.
+ * @param `obj` URI or literal value of object verb.
  * @param positive is the Triple positive (true by default)
  */
 case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
-    positive: Boolean = true) {
+  positive: Boolean = true) {
   def toTripleString: String = (if (positive) "" else "not ") + subject.toNodeString + " " + verb.toNodeString + " " + obj.toNodeString + "."
+  def toTripleString(ps: IPrefixStore): (String, Seq[Prefix]) = {
+    val s = subject.toNodeString(ps)
+    val v = verb.toNodeString(ps)
+    val o = obj.toNodeString(ps)
+
+    val prefixes = Seq(s, v, o).filter(_.prefix.isDefined).map(_.prefix.get).groupBy(_.uri).map(_._2.head).toSeq
+
+    (
+      (if (positive) "" else "not ") + s.shortcut + " " + v.shortcut + " " + o.shortcut + ".",
+      prefixes)
+  }
 }
 
 /**
@@ -89,4 +102,16 @@ case class Rule(uri: String, preconditions: Seq[QueryTriple],
 case class KnowledgeSet(uri: String, triples: Seq[Triple], rules: Seq[Rule],
   metadata: Seq[Triple]) {
   def toN3String: String = triples.map(triple => triple.toTripleString).reduceLeft(_ + _)
+  def toN3String(ps: IPrefixStore): String = {
+    val data = triples.map(triple => triple.toTripleString(ps))
+    var ret = ""
+    
+    data.flatMap(_._2).groupBy(_.uri).map(_._2.head).foreach { prefix =>
+      ret += "@prefix " + prefix.prefix + ": <" + prefix.uri + ">."
+    }
+    
+    data.map(_._1).foreach(ret += _)
+    
+    ret
+  }
 }
