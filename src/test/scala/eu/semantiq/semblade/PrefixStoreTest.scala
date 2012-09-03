@@ -5,40 +5,21 @@ import org.scalatest.matchers.ShouldMatchers
 
 class PrefixStoreTest extends FlatSpec with ShouldMatchers with BeforeAndAfterEach {
 
-  "UriNode" should "render itself using IPrefixStore" in {
+  "UriNode" should "be createble from prefixed string" in {
     // given
-    val urinode: UriNode = new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-
+    val prefixedUri = "rdf:type"
     // when
-    val actual = urinode.toNodeString(PrefixStore)
-    val expected = PrefixedNode("rdf:type", Some(Prefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")))
-
+    val actual = DefaultPrefixStore(prefixedUri)
     // then
-    actual should equal (expected)
+    actual should be (UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))
   }
 
-  "Triple" should "remove duplicated prefixes" in {
+  "UriNode" should "be renderable to prefixed string" in {
     // given
-    val triple: Triple = new Triple(new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#a"), new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#b"))
-    
+    val uriNode = UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#a")
     // when
-    val actual = triple.toTripleString(PrefixStore)
-    val expected = ("rdf:a rdf:type rdf:b.", Seq(Prefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#")))
-    
+    val DefaultPrefixStore(actual) = uriNode
     // then
-    actual should equal (expected)
-  }
-
-  "KnowledgeSet" should "write prefixes" in {
-    // given
-    val triple: Triple = new Triple(new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#a"), new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), new UriNode("http://www.w3.org/1999/02/22-rdf-syntax-ns#b"))
-    val set: KnowledgeSet = KnowledgeSet("uri:test", Seq(triple), Seq(), Seq())
-    
-    // when
-    val actual = set.toN3String(PrefixStore)
-    val expected = "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.rdf:a rdf:type rdf:b."
-    
-    // then
-    actual should equal (expected)
+    actual should be ("rdf:a")
   }
 }
