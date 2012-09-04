@@ -1,12 +1,10 @@
 package eu.semantiq.semblade
 
-import collection._
 import org.slf4j.LoggerFactory
 
 class KnowledgeBase extends IKnowledgeBase {
   val log = LoggerFactory.getLogger(getClass)
-
-  val database: mutable.Map[String, KnowledgeSet] = new mutable.HashMap[String, KnowledgeSet]
+  val database: collection.mutable.Map[String, KnowledgeSet] = new collection.mutable.HashMap[String, KnowledgeSet]
   var inferred: Set[Triple] = Set()
 
   def tell(knowledgeSet: KnowledgeSet) { database(knowledgeSet.uri) = knowledgeSet }
@@ -41,5 +39,4 @@ class KnowledgeBase extends IKnowledgeBase {
     }
     inferred = infer(dump.toSet, database.values.flatMap(ks => ks.rules))
   }
-
 }

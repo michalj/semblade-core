@@ -2,7 +2,8 @@ package eu.semantiq.semblade
 
 import collection._
 
-case class QueryTriple(subject: Node, verb: Node, obj: Node, positive: Boolean) {
+case class QueryTriple(subject: Node, verb: Node, obj: Node,
+  positive: Boolean = true) {
 
   private def nodeMatches(node: Node, concrete: ConcreteNode) = node match {
     case node: ConcreteNode => node == concrete
