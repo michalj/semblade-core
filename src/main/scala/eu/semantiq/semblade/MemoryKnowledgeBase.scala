@@ -2,13 +2,13 @@ package eu.semantiq.semblade
 
 import org.slf4j.LoggerFactory
 
-class KnowledgeBase(
-    database: Map[String, KnowledgeSet] = Map(),
+class MemoryKnowledgeBase(
+    database: Map[String, KnowledgeSet] = Map(), 
     inferred: Set[Triple] = Set()) extends IKnowledgeBase {
   val log = LoggerFactory.getLogger(getClass)
 
   def tell(knowledgeSet: KnowledgeSet) =
-    new KnowledgeBase(database + (knowledgeSet.uri -> knowledgeSet))
+    new MemoryKnowledgeBase(database + (knowledgeSet.uri -> knowledgeSet))
 
   private def query(triples: Iterable[Triple], currentQuery: Seq[QueryTriple], binding: Map[String, ConcreteNode]): Iterable[Map[String, ConcreteNode]] = {
     if (currentQuery.size == 0) return List(binding)
@@ -39,6 +39,6 @@ class KnowledgeBase(
       return infer(knowledge ++ newKnowledge, rules)
     }
     val newInferred = infer(dump.toSet, database.values.flatMap(ks => ks.rules))
-    new KnowledgeBase(database, newInferred)
+    new MemoryKnowledgeBase(database, newInferred)
   }
 }

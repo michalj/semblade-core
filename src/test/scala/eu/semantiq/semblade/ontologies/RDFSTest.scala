@@ -8,7 +8,7 @@ import eu.semantiq.semblade._
 class RDFSTest extends FeatureSpec with ShouldMatchers with TripleParser {
   def prefixStore = DefaultPrefixStore ++ Map(
     "sample" -> "http://semantiq.eu/ontologies/sample#")
-  val base = new KnowledgeBase() + RDFS + OWL
+  val base = new MemoryKnowledgeBase() + RDFS + OWL
 
   feature("RDF List semantics") {
     scenario("rdf:member if not rdf:rest then rdf:first") {

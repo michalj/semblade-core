@@ -11,7 +11,7 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
   var kb: IKnowledgeBase = _
 
   override def beforeEach() {
-    kb = new KnowledgeBase
+    kb = new MemoryKnowledgeBase
     kb = kb.tell(new KnowledgeSet("#set0", List(
       "sample:Ala sample:owns sample:aCat",
       "sample:Ala sample:owns sample:aDog",

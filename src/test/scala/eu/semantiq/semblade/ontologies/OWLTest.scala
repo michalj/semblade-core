@@ -8,7 +8,7 @@ import org.scalatest.BeforeAndAfterEach
 class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
   def prefixStore = DefaultPrefixStore ++ Map(
     "sample" -> "http://semantiq.eu/ontologies/sample#")
-  val base = new KnowledgeBase() + RDFS + OWL
+  val base = new MemoryKnowledgeBase() + RDFS + OWL
 
   feature("OWL defines owl:sameAs") {
     scenario("owl:sameAs is reflexive") {

@@ -1,9 +1,9 @@
 package eu.semantiq.semblade
 
-import collection._
-import org.slf4j.LoggerFactory
-import java.net._
-import scala.xml._
+import java.net.URLEncoder
+
+import scala.xml.NodeSeq.seqToNodeSeq
+import scala.xml.XML
 
 object SparqlQueryResultsXmlParser {
   def parse(xml: scala.xml.Elem): Iterable[Map[String, ConcreteNode]] = {
@@ -16,7 +16,7 @@ object SparqlQueryResultsXmlParser {
     }
     xml\\"sparql"\\"results"\\"result" map(r => {
       // Result
-      var result = mutable.Map.empty[String, ConcreteNode]
+      var result = Map[String, ConcreteNode]()
       (r\\"binding").foreach(binding => result += binding.attribute("name").get.text -> bindingToNode(binding)) // Bindings
       result
     })
