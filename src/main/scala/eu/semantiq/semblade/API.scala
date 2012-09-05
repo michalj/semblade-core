@@ -86,7 +86,7 @@ case class SimpleRule(
   preconditions: Seq[QueryTriple],
   implications: Seq[QueryTriple]) extends Rule {
   def preconditionsQuery = preconditions
-  def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]) = 
+  def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]) =
     inputs.flatMap(b => implications.map(qt => qt.apply(b)))
 }
 
@@ -110,15 +110,19 @@ case class KnowledgeSet(uri: String, triples: Seq[Triple], rules: Seq[Rule],
 
 trait SelectableKnowledgeSource {
   def select(quer: Seq[QueryTriple]): Iterable[Map[String, ConcreteNode]]
-  def ?(triples: QueryTriple*) = select(triples)  
+  def ?(triples: QueryTriple*) = select(triples)
 }
 
-trait KnowledgeBase extends SelectableKnowledgeSource {
-  def tell(knowledgeSet: KnowledgeSet): KnowledgeBase
+trait DumpableKnowledgeSource {
   def dump: Iterable[Triple]
+}
+
+trait KnowledgeBase extends SelectableKnowledgeSource
+  with DumpableKnowledgeSource {
+  def tell(knowledgeSet: KnowledgeSet): KnowledgeBase
   def infer: KnowledgeBase
   def ! = infer
   def +(knowledgeSet: KnowledgeSet) = tell(knowledgeSet)
   def +(triple: Triple) = tell(KnowledgeSet("triple:" + triple.hashCode,
-      List(triple), List(), List()))
+    List(triple), List(), List()))
 }
