@@ -32,7 +32,7 @@ class MemoryKnowledgeBase(
   def infer = {
     def infer(knowledge: Set[Triple], rules: Iterable[Rule]): Set[Triple] = {
       val newKnowledge = rules
-        .flatMap(r => r.generateImplications(query(knowledge, r.preconditionsQuery, Map())))
+        .flatMap(r => r.generateImplications(query(knowledge, r.getPreconditions, Map())))
         .filter(t => !knowledge.contains(t))
       if (newKnowledge.size == 0) return knowledge
       log.debug("inferred: " + newKnowledge)

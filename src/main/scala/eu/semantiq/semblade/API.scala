@@ -35,8 +35,8 @@ case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
  * <li>give no side effects</li>
  * </ul>
  */
-trait Rule {
-  def preconditionsQuery: Seq[QueryTriple]
+abstract class Rule(uri: String, preconditions: Seq[QueryTriple]) {
+  def getPreconditions = preconditions
   def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]): Iterable[Triple]
 }
 
@@ -84,10 +84,17 @@ trait Rule {
 case class SimpleRule(
   uri: String,
   preconditions: Seq[QueryTriple],
-  implications: Seq[QueryTriple]) extends Rule {
-  def preconditionsQuery = preconditions
+  implications: Seq[QueryTriple]) extends Rule(uri, preconditions) {
   def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]) =
     inputs.flatMap(b => implications.map(qt => qt.apply(b)))
+}
+
+case class FunctionBasedRule(
+  uri: String,
+  preconditions: Seq[QueryTriple],
+  f: Iterable[Map[String, ConcreteNode]] => Iterable[Triple])
+  extends Rule(uri, preconditions) {
+  def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]) = f(inputs)
 }
 
 /**
