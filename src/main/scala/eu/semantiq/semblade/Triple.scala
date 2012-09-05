@@ -1,7 +1,5 @@
 package eu.semantiq.semblade
 
-import collection._
-
 abstract class Node {
   def toNodeString: String
 }
@@ -27,6 +25,19 @@ case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
 case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
   positive: Boolean = true) {
   def toTripleString: String = (if (positive) "" else "not ") + subject.toNodeString + " " + verb.toNodeString + " " + obj.toNodeString + "."
+}
+
+/**
+ * All rules need to:
+ * <ul>
+ * <li>be deterministic</li>
+ * <li>not create any new nodes</li>
+ * <li>give no side effects</li>
+ * </ul>
+ */
+trait Rule {
+  def preconditionsQuery: Seq[QueryTriple]
+  def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]): Iterable[Triple]
 }
 
 /**
@@ -59,7 +70,7 @@ case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
  * subClass => t:Cat
  * }}}
  *
- * And after applying this binding to implication template, will infre that
+ * And after applying this binding to implication template, will infer that:
  *
  * {{{
  * t:pankracy rdfs:isA t:Animal.
@@ -70,8 +81,14 @@ case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
  * 		variables.
  * @param implications Template to generate the n3content implied by this rule.
  */
-case class Rule(uri: String, preconditions: Seq[QueryTriple],
-  implications: Seq[QueryTriple])
+case class SimpleRule(
+  uri: String,
+  preconditions: Seq[QueryTriple],
+  implications: Seq[QueryTriple]) extends Rule {
+  def preconditionsQuery = preconditions
+  def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]) = 
+    inputs.flatMap(b => implications.map(qt => qt.apply(b)))
+}
 
 /**
  * Encapsulation of knowledge sharing common meta-data, like origin, trust,

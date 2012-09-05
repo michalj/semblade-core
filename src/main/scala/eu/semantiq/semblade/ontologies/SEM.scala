@@ -6,7 +6,7 @@ import DefaultTripleParser._
 object SEM extends KnowledgeSet("http://semantiq.eu/ontologies/sem/1.0/",
   List("sem:listSize rdf:domain rdf:List"),
   List(
-    Rule("sem:ListSize",
+    SimpleRule("sem:ListSize",
       List("?list rdf:first rdf:nil"),
       List("?list sem:size 0"))),
   List()) {

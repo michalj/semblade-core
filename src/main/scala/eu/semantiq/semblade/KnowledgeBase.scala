@@ -32,7 +32,7 @@ class KnowledgeBase(
   def infer = {
     def infer(knowledge: Set[Triple], rules: Iterable[Rule]): Set[Triple] = {
       val newKnowledge = rules
-        .flatMap(r => query(knowledge, r.preconditions, Map()).flatMap(b => r.implications.map(qt => qt.apply(b))))
+        .flatMap(r => r.generateImplications(query(knowledge, r.preconditionsQuery, Map())))
         .filter(t => !knowledge.contains(t))
       if (newKnowledge.size == 0) return knowledge
       log.debug("inferred: " + newKnowledge)
