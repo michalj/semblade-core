@@ -9,12 +9,12 @@ object RDFS extends KnowledgeSet("http://www.w3.org/2000/01/rdf-schema#", List(
   "rdf:first rdf:domain rdf:List",
   "rdf:rest rdf:domain rdf:List",
   "rdf:rest rdf:range rdf:List"), List(
-  "rdfs:inheritance" :=
-    "?a rdfs:subclassOf ?b" ~ "?i rdf:type ?a" ~> "?i rdf:type ?b",
-  "rdfs:subclassTransitivity" :=
-    "?a rdfs:subclassOf ?b" ~ "?b rdfs:subclassOf ?c" ~> "?a rdfs:subclassOf ?c",
-  "rdfs:domain" :=
-    "?property rdfs:domain ?class" ~ "?object ?property ?anything" ~>
+  "rdfs:inheritance" ~=
+    "?a rdfs:subclassOf ?b" :: "?i rdf:type ?a" >>> "?i rdf:type ?b",
+  "rdfs:subclassTransitivity" ~=
+    "?a rdfs:subclassOf ?b" :: "?b rdfs:subclassOf ?c" >>> "?a rdfs:subclassOf ?c",
+  "rdfs:domain" ~=
+    "?property rdfs:domain ?class" :: "?object ?property ?anything" >>>
     "?object rdf:type ?class",
   Rule("rdfs:range",
     List("?property rdfs:range ?class", "?anything ?property ?subject"),

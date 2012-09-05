@@ -32,11 +32,11 @@ object RuleSyntax {
   implicit def string2ruleName(name: String) = RuleName(name)
   implicit def string2queryTripleList(string: String) = QueryTripleList(List(string))
   case class RuleName(name: String) {
-    def :=(implication: Implication) = Rule(name, implication.pre, implication.post)
+    def ~=(implication: Implication) = Rule(name, implication.pre, implication.post)
   }
   case class QueryTripleList(triples: List[QueryTriple]) {
-    def ~(triple: QueryTriple) = QueryTripleList(triples :+ triple)
-    def ~>(postconditions: QueryTripleList) = Implication(triples, postconditions.triples)
+    def ::(triple: QueryTriple) = QueryTripleList(triples :+ triple)
+    def >>>(postconditions: QueryTripleList) = Implication(triples, postconditions.triples)
   }
   case class Implication(pre: List[QueryTriple], post: List[QueryTriple])
 }
