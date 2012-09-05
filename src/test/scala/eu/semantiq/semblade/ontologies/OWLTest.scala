@@ -5,7 +5,7 @@ import org.scalatest.matchers.ShouldMatchers
 import eu.semantiq.semblade._
 import org.scalatest.BeforeAndAfterEach
 
-class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
+class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
   def prefixStore = DefaultPrefixStore ++ Map(
     "sample" -> "http://semantiq.eu/ontologies/sample#")
   val base = new MemoryKnowledgeBase() + RDFS + OWL

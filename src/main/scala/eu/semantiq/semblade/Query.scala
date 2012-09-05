@@ -1,7 +1,5 @@
 package eu.semantiq.semblade
 
-import collection._
-
 /**
  * Represents any SPARQL Query.
  * @param method Type of query. Eg. "SELECT *", "ASK", "CONSTRUCT", "DESCRIBE"

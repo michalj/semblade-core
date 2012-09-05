@@ -5,7 +5,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 class QueryTripleTest extends FlatSpec with ShouldMatchers
 with BeforeAndAfterEach
-with TripleParser {
+with Implicits {
   def prefixStore = DefaultPrefixStore ++ Map("sample" -> "http://semantiq.eu/ontologies/sample#")
 
   "Query triple" should "apply partial binding" in {

@@ -36,11 +36,11 @@ object ResultsPrinter {
   }
 }
 
-case class SparqlEndpoint(url: String) extends IKnowledgeSource {
-  def query(queryTriples: Seq[QueryTriple]): Iterable[Map[String, ConcreteNode]] = makeAnyQuery(new Query("SELECT *", queryTriples, -1))
-  override def makeAnyQuery(query: Query): Iterable[Map[String, ConcreteNode]] = {
+case class SparqlEndpoint(url: String) extends SelectableKnowledgeSource {
+  def select(queryTriples: Seq[QueryTriple]) = {
     SparqlQueryResultsXmlParser.parse(
-      XML.load(url + "/?format=application/sparql-results+xml&query=" + URLEncoder.encode(query.toSparqlString, "UTF-8"))
+      XML.load(url + "/?format=application/sparql-results+xml&query=" +
+          URLEncoder.encode(Query("SELECT", queryTriples, -1).toSparqlString, "UTF-8"))
     )
   }
 }

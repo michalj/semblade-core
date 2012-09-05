@@ -107,3 +107,18 @@ case class KnowledgeSet(uri: String, triples: Seq[Triple], rules: Seq[Rule],
   metadata: Seq[Triple]) {
   def toN3String: String = triples.map(triple => triple.toTripleString).reduceLeft(_ + _)
 }
+
+trait SelectableKnowledgeSource {
+  def select(quer: Seq[QueryTriple]): Iterable[Map[String, ConcreteNode]]
+  def ?(triples: QueryTriple*) = select(triples)  
+}
+
+trait KnowledgeBase extends SelectableKnowledgeSource {
+  def tell(knowledgeSet: KnowledgeSet): KnowledgeBase
+  def dump: Iterable[Triple]
+  def infer: KnowledgeBase
+  def ! = infer
+  def +(knowledgeSet: KnowledgeSet) = tell(knowledgeSet)
+  def +(triple: Triple) = tell(KnowledgeSet("triple:" + triple.hashCode,
+      List(triple), List(), List()))
+}

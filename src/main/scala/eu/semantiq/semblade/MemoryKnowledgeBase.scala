@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 
 class MemoryKnowledgeBase(
     database: Map[String, KnowledgeSet] = Map(), 
-    inferred: Set[Triple] = Set()) extends IKnowledgeBase {
+    inferred: Set[Triple] = Set()) extends KnowledgeBase {
   val log = LoggerFactory.getLogger(getClass)
 
   def tell(knowledgeSet: KnowledgeSet) =
@@ -25,7 +25,7 @@ class MemoryKnowledgeBase(
       .flatMap(newBinding => query(triples, currentQuery.tail, newBinding))
   }
 
-  def query(queryTriples: Seq[QueryTriple]) = query(dump, queryTriples, Map())
+  def select(queryTriples: Seq[QueryTriple]) = query(dump, queryTriples, Map())
 
   def dump: Iterable[Triple] = database.values.flatMap(ks => ks.triples) ++ inferred
 

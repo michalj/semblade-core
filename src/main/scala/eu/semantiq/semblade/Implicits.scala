@@ -1,6 +1,6 @@
 package eu.semantiq.semblade
 
-trait TripleParser {
+trait Implicits {
   def prefixStore: PrefixStore
   
   implicit def string2uriNode(s: String) = prefixStore(s)
@@ -21,22 +21,23 @@ trait TripleParser {
             false)
     }
   }
-}
-
-object DefaultTripleParser extends TripleParser {
-  def prefixStore = DefaultPrefixStore
-}
-
-object RuleSyntax {
-  import DefaultTripleParser._
+  
   implicit def string2ruleName(name: String) = RuleName(name)
+  
   implicit def string2queryTripleList(string: String) = QueryTripleList(List(string))
+  
   case class RuleName(name: String) {
     def ~=(implication: Implication) = SimpleRule(name, implication.pre, implication.post)
   }
+  
   case class QueryTripleList(triples: List[QueryTriple]) {
     def ::(triple: QueryTriple) = QueryTripleList(triples :+ triple)
     def >>>(postconditions: QueryTripleList) = Implication(triples, postconditions.triples)
   }
+  
   case class Implication(pre: List[QueryTriple], post: List[QueryTriple])
+}
+
+object DefaultImplicits extends Implicits {
+  def prefixStore = DefaultPrefixStore
 }

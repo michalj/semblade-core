@@ -6,9 +6,9 @@ import org.scalatest.matchers.ShouldMatchers
 import eu.semantiq.semblade.ontologies.RDFS
 
 class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
-  with BeforeAndAfterEach with TripleParser {
+  with BeforeAndAfterEach with Implicits {
   def prefixStore = DefaultPrefixStore ++ Map("sample" -> "http://semantiq.eu/ontologies/sample#")
-  var kb: IKnowledgeBase = _
+  var kb: KnowledgeBase = _
 
   override def beforeEach() {
     kb = new MemoryKnowledgeBase
@@ -24,7 +24,7 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
     // when
     kb = kb.tell(new KnowledgeSet("#set1", List("sample:Ala sample:likes sample:aCat"), List(), List()))
     // then
-    val actual = kb.query(Seq("?who sample:likes ?whom"))
+    val actual = kb.select(Seq("?who sample:likes ?whom"))
     actual.toSet should be (Set(Map(
         "who" -> prefixStore("sample:Ala"),
         "whom" -> prefixStore("sample:aCat")
@@ -33,7 +33,7 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
 
   it should "run queries" in {
     // when
-    val actual = kb.query(List("?who sample:owns ?pet", "?pet rdf:type sample:Cat"))
+    val actual = kb.select(List("?who sample:owns ?pet", "?pet rdf:type sample:Cat"))
     // then
     actual should have size (1)
     actual.head("who") should be(prefixStore("sample:Ala"))
@@ -41,7 +41,7 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
 
   it should "run queries giving multiple results" in {
     // when
-    val actual = kb.query(List("?pet rdf:type sample:Cat"))
+    val actual = kb.select(List("?pet rdf:type sample:Cat"))
     // then
     actual should have size (2)
     actual should contain(collection.Map[String, ConcreteNode]("pet" -> prefixStore("sample:aCat")))
@@ -54,7 +54,7 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
     // when
     kb = kb.infer
     // then
-    val animals = kb.query(List("?pet rdf:type sample:Animal"))
+    val animals = kb.select(List("?pet rdf:type sample:Animal"))
     animals should have size (2)
     animals should contain(collection.Map[String, ConcreteNode]("pet" -> prefixStore("sample:aCat")))
     animals should contain(collection.Map[String, ConcreteNode]("pet" -> prefixStore("sample:anotherCat")))

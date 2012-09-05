@@ -1,7 +1,7 @@
 package eu.semantiq.semblade.ontologies
 
 import eu.semantiq.semblade._
-import DefaultTripleParser._
+import DefaultImplicits._
 
 object OWL extends KnowledgeSet("http://www.w3.org/2002/07/owl#", List(
   "owl:sameAs rdf:type owl:TransitiveProperty",

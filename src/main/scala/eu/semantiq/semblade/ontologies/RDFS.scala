@@ -1,8 +1,7 @@
 package eu.semantiq.semblade.ontologies
 
 import eu.semantiq.semblade._
-import DefaultTripleParser._
-import RuleSyntax._
+import DefaultImplicits._
 
 object RDFS extends KnowledgeSet("http://www.w3.org/2000/01/rdf-schema#", List(
   "rdf:member rdf:domain rdf:List",
