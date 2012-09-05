@@ -2,12 +2,13 @@ package eu.semantiq.semblade
 
 import org.slf4j.LoggerFactory
 
-class KnowledgeBase extends IKnowledgeBase {
+class KnowledgeBase(
+    database: Map[String, KnowledgeSet] = Map(),
+    inferred: Set[Triple] = Set()) extends IKnowledgeBase {
   val log = LoggerFactory.getLogger(getClass)
-  val database: collection.mutable.Map[String, KnowledgeSet] = new collection.mutable.HashMap[String, KnowledgeSet]
-  var inferred: Set[Triple] = Set()
 
-  def tell(knowledgeSet: KnowledgeSet) { database(knowledgeSet.uri) = knowledgeSet }
+  def tell(knowledgeSet: KnowledgeSet) =
+    new KnowledgeBase(database + (knowledgeSet.uri -> knowledgeSet))
 
   private def query(triples: Iterable[Triple], currentQuery: Seq[QueryTriple], binding: Map[String, ConcreteNode]): Iterable[Map[String, ConcreteNode]] = {
     if (currentQuery.size == 0) return List(binding)
@@ -28,7 +29,7 @@ class KnowledgeBase extends IKnowledgeBase {
 
   def dump: Iterable[Triple] = database.values.flatMap(ks => ks.triples) ++ inferred
 
-  def infer {
+  def infer = {
     def infer(knowledge: Set[Triple], rules: Iterable[Rule]): Set[Triple] = {
       val newKnowledge = rules
         .flatMap(r => query(knowledge, r.preconditions, Map()).flatMap(b => r.implications.map(qt => qt.apply(b))))
@@ -37,6 +38,7 @@ class KnowledgeBase extends IKnowledgeBase {
       log.debug("inferred: " + newKnowledge)
       return infer(knowledge ++ newKnowledge, rules)
     }
-    inferred = infer(dump.toSet, database.values.flatMap(ks => ks.rules))
+    val newInferred = infer(dump.toSet, database.values.flatMap(ks => ks.rules))
+    new KnowledgeBase(database, newInferred)
   }
 }

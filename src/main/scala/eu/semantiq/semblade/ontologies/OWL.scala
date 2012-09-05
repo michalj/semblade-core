@@ -5,7 +5,8 @@ import DefaultTripleParser._
 
 object OWL extends KnowledgeSet("http://www.w3.org/2002/07/owl#", List(
   "owl:sameAs rdf:type owl:TransitiveProperty",
-  "owl:sameAs rdf:type owl:SymmetricProperty"), List(
+  "owl:sameAs rdf:type owl:SymmetricProperty",
+  "rdf:first rdf:type owl:FunctionalProperty"), List(
   Rule("owl:sameAsRefexivity",
     List("?a ?anyProperty ?anyObject"),
     List("?a owl:sameAs ?a")),

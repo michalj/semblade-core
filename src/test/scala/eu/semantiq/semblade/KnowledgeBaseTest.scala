@@ -12,23 +12,23 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
 
   override def beforeEach() {
     kb = new KnowledgeBase
-    kb.tell(new KnowledgeSet("#set0", List(
+    kb = kb.tell(new KnowledgeSet("#set0", List(
       "sample:Ala sample:owns sample:aCat",
       "sample:Ala sample:owns sample:aDog",
       "sample:aCat rdf:type sample:Cat",
       "sample:anotherCat rdf:type sample:Cat"), List(), List()))
-    kb.tell(RDFS)
+    kb = kb.tell(RDFS)
   }
 
-  "Knowledge base" should "know what told" in {
-    kb.dump should have size (4)
-  }
-
-  it should "shouldUpdateKnowledge" in {
+  it should "update knowledge" in {
     // when
-    kb.tell(new KnowledgeSet("#set1", List("sample:Ala sample:likes sample:aCat"), List(), List()))
+    kb = kb.tell(new KnowledgeSet("#set1", List("sample:Ala sample:likes sample:aCat"), List(), List()))
     // then
-    kb.dump should have size (5)
+    val actual = kb.query(Seq("?who sample:likes ?whom"))
+    actual.toSet should be (Set(Map(
+        "who" -> prefixStore("sample:Ala"),
+        "whom" -> prefixStore("sample:aCat")
+    )))
   }
 
   it should "run queries" in {
@@ -50,9 +50,9 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
 
   it should "do rule based inference" in {
     // given
-    kb.tell(new KnowledgeSet("#set1", List("sample:Cat rdfs:subclassOf sample:Pet", "sample:Pet rdfs:subclassOf sample:Animal"), List(), List()))
+    kb = kb.tell(new KnowledgeSet("#set1", List("sample:Cat rdfs:subclassOf sample:Pet", "sample:Pet rdfs:subclassOf sample:Animal"), List(), List()))
     // when
-    kb.infer
+    kb = kb.infer
     // then
     val animals = kb.query(List("?pet rdf:type sample:Animal"))
     animals should have size (2)
