@@ -2,21 +2,20 @@ package eu.semantiq.semblade.ontologies
 
 import eu.semantiq.semblade._
 import DefaultTripleParser._
+import RuleSyntax._
 
 object RDFS extends KnowledgeSet("http://www.w3.org/2000/01/rdf-schema#", List(
   "rdf:member rdf:domain rdf:List",
   "rdf:first rdf:domain rdf:List",
   "rdf:rest rdf:domain rdf:List",
   "rdf:rest rdf:range rdf:List"), List(
-  Rule("rdfs:inheritance",
-    List("?a rdfs:subclassOf ?b", "?i rdf:type ?a"),
-    List("?i rdf:type ?b")),
-  Rule("rdfs:subclassTransitivity",
-    List("?a rdfs:subclassOf ?b", "?b rdfs:subclassOf ?c"),
-    List("?a rdfs:subclassOf ?c")),
-  Rule("rdfs:domain",
-    List("?property rdfs:domain ?class", "?object ?property ?anything"),
-    List("?object rdf:type ?class")),
+  "rdfs:inheritance" :=
+    "?a rdfs:subclassOf ?b" ~ "?i rdf:type ?a" ~> "?i rdf:type ?b",
+  "rdfs:subclassTransitivity" :=
+    "?a rdfs:subclassOf ?b" ~ "?b rdfs:subclassOf ?c" ~> "?a rdfs:subclassOf ?c",
+  "rdfs:domain" :=
+    "?property rdfs:domain ?class" ~ "?object ?property ?anything" ~>
+    "?object rdf:type ?class",
   Rule("rdfs:range",
     List("?property rdfs:range ?class", "?anything ?property ?subject"),
     List("?subject rdf:type ?class")),
@@ -43,5 +42,4 @@ object RDFS extends KnowledgeSet("http://www.w3.org/2000/01/rdf-schema#", List(
     List("?rest rdf:member ?a")),
   Rule("rdf:ListEmpty",
     List("?list rdf:first rdf:nil", "?a ?anyProperty ?anySubject"),
-    List("?list not rdf:member ?a"))  
-  ), List())
+    List("?list not rdf:member ?a"))), List())
