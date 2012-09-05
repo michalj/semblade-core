@@ -22,4 +22,13 @@ object OWL extends KnowledgeSet("http://www.w3.org/2002/07/owl#", List(
     List("?b ?property ?a")),
   Rule("owl:FunctionalProperty",
     List("?property rdf:type owl:FunctionalProperty", "?a ?property ?b", "?a ?property ?c"),
-    List("?b owl:sameAs ?c"))), List())
+    List("?b owl:sameAs ?c")),
+  Rule("owl:Thing",
+    List("?class rdfs:subclassOf ?otherClass"),
+    List("?class rdfs:subclassOf owl:Thing")),
+  Rule("owl:differentFromNotSameAs",
+    List("?a not owl:sameAs ?b"),
+    List("?a owl:differentFrom ?b")),
+  Rule("owl:notDifferentFromSameAs",
+    List("?a owl:sameAs ?b"),
+    List("?a not owl:differentFrom ?b"))), List())

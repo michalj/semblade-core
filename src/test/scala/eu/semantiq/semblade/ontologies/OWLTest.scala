@@ -15,9 +15,9 @@ class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
       // given
       val kb = base + "sample:Fafik rdf:type sample:Dog" !
       // when
-      val actual = kb.query(Seq("?x owl:sameAs sample:Fafik"))
+      val actual = kb ? "?x owl:sameAs sample:Fafik"
       // then
-      actual should be(Seq(Map("x" -> prefixStore("sample:Fafik"))))
+      actual should be(Seq(Map[String, UriNode]("x" -> "sample:Fafik")))
     }
     scenario("owl:sameAs is transitive") {
       // given
@@ -25,7 +25,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
         "sample:Fafik owl:sameAs sample:DogOfAla" +
         "sample:DogOfAla owl:sameAs sample:FavPetOfAla" !
       // when
-      val actual = kb.query(Seq("sample:Fafik owl:sameAs ?x"))
+      val actual = kb ? "sample:Fafik owl:sameAs ?x"
       // then
       actual.toSet should be(Set(
         Map("x" -> prefixStore("sample:Fafik")),
@@ -36,7 +36,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
       // given
       val kb = base + "sample:Germany owl:sameAs sample:Alemania" !
       // when
-      val actual = kb.query(Seq("sample:Alemania owl:sameAs ?what"))
+      val actual = kb ? "sample:Alemania owl:sameAs ?what"
       actual.toSet should be(Set(
         Map(
           "what" -> prefixStore("sample:Germany")),
@@ -51,7 +51,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with TripleParser {
         "sample:closeTo rdf:type owl:SymmetricProperty" +
         "sample:London sample:closeTo sample:Paris" !
       // when
-      val actual = kb.query(Seq("sample:Paris sample:closeTo ?where"))
+      val actual = kb ? "sample:Paris sample:closeTo ?where"
       // then
       actual.toSet should be(Set(
         Map("where" -> prefixStore("sample:London"))))

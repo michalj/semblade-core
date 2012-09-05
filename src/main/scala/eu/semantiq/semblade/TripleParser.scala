@@ -2,13 +2,12 @@ package eu.semantiq.semblade
 
 trait TripleParser {
   def prefixStore: PrefixStore
+  
+  implicit def string2uriNode(s: String) = prefixStore(s)
 
   implicit def string2triple(s: String): Triple = s.split(" ").toSeq match {
-    case Seq(obj, property, subject) => Triple(
-      prefixStore(obj), prefixStore(property), prefixStore(subject))
-    case Seq(obj, "not", property, subject) => Triple(
-      prefixStore(obj), prefixStore(property), prefixStore(subject),
-      false)
+    case Seq(obj, property, subject) => Triple(obj, property, subject)
+    case Seq(obj, "not", property, subject) => Triple(obj, property, subject, false)
   }
 
   implicit def string2queryTriple(s: String): QueryTriple = {

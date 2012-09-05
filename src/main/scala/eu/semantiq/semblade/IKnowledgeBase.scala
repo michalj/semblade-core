@@ -4,6 +4,7 @@ import collection._
 trait IKnowledgeSource {
   def makeAnyQuery(quer: Query): Iterable[Map[String, ConcreteNode]] = query(quer.queryTriples)
   def query(quer: Seq[QueryTriple]): Iterable[Map[String, ConcreteNode]]
+  def ?(triples: QueryTriple*) = query(triples)
 }
 trait IKnowledgeBase extends IKnowledgeSource {
   def tell(knowledgeSet: KnowledgeSet): IKnowledgeBase

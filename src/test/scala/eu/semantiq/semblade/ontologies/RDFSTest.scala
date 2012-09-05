@@ -18,7 +18,7 @@ class RDFSTest extends FeatureSpec with ShouldMatchers with TripleParser {
         "sample:ABC rdf:rest sample:BC" +
         "sample:BC not rdf:member sample:A" !
       // when
-      val actual = kb.query(Seq("sample:ABC rdf:first ?x"))
+      val actual = kb ? "sample:ABC rdf:first ?x"
       // then
       actual.toSet should be(Set(Map("x" -> prefixStore("sample:A"))))
     }
@@ -29,7 +29,7 @@ class RDFSTest extends FeatureSpec with ShouldMatchers with TripleParser {
         "sample:ABC not rdf:first sample:C" +
         "sample:ABC rdf:rest sample:BC" !
       // when
-      val actual = kb.query(Seq("?list rdf:member sample:C"))
+      val actual = kb ? "?list rdf:member sample:C"
       // then
       actual.toSet should be(Set(
         Map("list" -> prefixStore("sample:ABC")),
@@ -41,7 +41,7 @@ class RDFSTest extends FeatureSpec with ShouldMatchers with TripleParser {
         "sample:EmptyBasket rdf:first rdf:nil" +
         "sample:Carrot rdf:type sample:Grocery" !
       // when
-      val actual = kb.query(Seq("?places not rdf:member sample:Carrot"))
+      val actual = kb ? "?places not rdf:member sample:Carrot"
       // then
       actual.toSet should be(Set(
         Map("places" -> prefixStore("sample:EmptyBasket"))))
