@@ -28,5 +28,5 @@ case class QueryTriple(subject: Node, verb: Node, obj: Node,
     }
     QueryTriple(bind(subject), bind(verb), bind(obj), positive)
   }
-  def toTripleString: String = (if(positive) "" else "not ") + subject.toNodeString + " " + verb.toNodeString + " " + obj.toNodeString + "."
+  override def toString: String = (if(positive) "" else "not ") + subject.toString + " " + verb.toString + " " + obj.toString + "."
 }

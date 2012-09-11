@@ -29,7 +29,7 @@ object ResultsPrinter {
     q.headOption.getOrElse(Map()).foreach(item => to_print += item._1 + "\t")
     to_print += "\n"
     q.foreach(map => {
-      map.foreach(item => to_print += item._2.toNodeString + "\t")
+      map.foreach(item => to_print += item._2.toString + "\t")
       to_print += "\n"
     })
     println(to_print)

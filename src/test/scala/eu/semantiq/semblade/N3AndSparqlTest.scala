@@ -12,9 +12,9 @@ class N3AndSparqlTest extends FlatSpec with ShouldMatchers with BeforeAndAfterEa
     val valnode: ValueNode = new ValueNode("1996-09-17", "xsd:Date")
 
     // when
-    val r_varnode = varnode.toNodeString
-    val r_urinode = urinode.toNodeString
-    val r_valnode = valnode.toNodeString
+    val r_varnode = varnode.toString
+    val r_urinode = urinode.toString
+    val r_valnode = valnode.toString
 
     // then
     r_varnode should equal ("?a")
@@ -28,8 +28,8 @@ class N3AndSparqlTest extends FlatSpec with ShouldMatchers with BeforeAndAfterEa
     val qtriple: QueryTriple = new QueryTriple(new UriNode("uri:a"), new UriNode("uri:b"), new VariableNode("a"), true)
 
     // when
-    val r_triple: String = triple.toTripleString
-    val r_qtriple: String = qtriple.toTripleString
+    val r_triple: String = triple.toString
+    val r_qtriple: String = qtriple.toString
 
     // then
     r_triple should equal ("<uri:a> <uri:b> \"c\"^d:e.")

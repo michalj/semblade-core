@@ -1,19 +1,22 @@
 package eu.semantiq.semblade
 
-abstract class Node {
-  def toNodeString: String
-}
-abstract class ConcreteNode extends Node
+trait Object
+abstract class Node
+abstract class ConcreteNode extends Node with Object
 case class VariableNode(variable: String) extends Node {
-  def toNodeString = "?" + variable
+  override def toString = "?" + variable
 }
 case class UriNode(uri: String) extends ConcreteNode {
-  def toNodeString = "<" + uri + ">"
+  override def toString = "<" + uri + ">"
 }
 case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
-  def toNodeString = "\"" + value + "\"^" + typeUri //TODO: encode string
+  override def toString = "\"" + value + "\"^" + typeUri //TODO: encode string
+}
+case class ListObject(list: Seq[ConcreteNode]) extends Object {
+  override def toString = "(" + list.mkString(", ") + ")"
 }
 
+abstract class Statement
 /**
  * Represents RDF triple.
  *
@@ -23,8 +26,17 @@ case class ValueNode(value: String, typeUri: String) extends ConcreteNode {
  * @param positive is the Triple positive (true by default)
  */
 case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
-  positive: Boolean = true) {
-  def toTripleString: String = (if (positive) "" else "not ") + subject.toNodeString + " " + verb.toNodeString + " " + obj.toNodeString + "."
+  positive: Boolean = true) extends Statement {
+  override def toString = subject.toString + " " +
+    (if (positive) "" else "not ") + verb.toString + " " +
+    obj.toString + "."
+}
+
+case class RichTriple(subject: ConcreteNode, verb: ConcreteNode, obj: Object,
+  positive: Boolean = true) extends Statement {
+  override def toString = subject.toString + " " +
+    (if (positive) "" else "not ") + verb.toString + " " +
+    obj.toString + "."
 }
 
 /**
@@ -35,7 +47,8 @@ case class Triple(subject: ConcreteNode, verb: ConcreteNode, obj: ConcreteNode,
  * <li>give no side effects</li>
  * </ul>
  */
-abstract class Rule(uri: String, preconditions: Seq[QueryTriple]) {
+abstract class Rule(uri: String, preconditions: Seq[QueryTriple])
+  extends Statement {
   def getPreconditions = preconditions
   def generateImplications(inputs: Iterable[Map[String, ConcreteNode]]): Iterable[Triple]
 }
@@ -112,7 +125,7 @@ case class FunctionBasedRule(
  */
 case class KnowledgeSet(uri: String, triples: Seq[Triple], rules: Seq[Rule],
   metadata: Seq[Triple]) {
-  def toN3String: String = triples.map(triple => triple.toTripleString).reduceLeft(_ + _)
+  def toN3String: String = triples.map(triple => triple.toString).reduceLeft(_ + _)
 }
 
 trait SelectableKnowledgeSource {
