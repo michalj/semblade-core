@@ -5,7 +5,7 @@ import util.parsing.combinator.ImplicitConversions
 import util.parsing.combinator.lexical.StdLexical
 import util.parsing.combinator.syntactical.StdTokenParsers
 
-class N3Parser extends StdTokenParsers with ImplicitConversions {
+object N3Parser extends StdTokenParsers with ImplicitConversions {
 
   type Tokens = N3Lexer
   val lexical = new Tokens
@@ -36,8 +36,8 @@ class N3Parser extends StdTokenParsers with ImplicitConversions {
 
   val nsBindings = new ThreadLocal[Map[String, String]]
 
-  def parse(text: String): Seq[Statement] = {
-    nsBindings.set(Map())
+  def parse(text: String, initialNamespaces: Map[String, String] = Map()): Seq[Statement] = {
+    nsBindings.set(initialNamespaces)
     phrase(n3content)(new lexical.Scanner(text)) match {
       case Success(tree, _) => tree
       case e: NoSuccess => throw new Exception(e.toString)

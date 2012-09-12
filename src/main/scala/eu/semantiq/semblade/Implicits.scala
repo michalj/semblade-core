@@ -1,5 +1,7 @@
 package eu.semantiq.semblade
 
+import eu.semantiq.semblade.parsers.n3._
+
 trait Implicits {
   def prefixStore: PrefixStore
 
@@ -10,6 +12,8 @@ trait Implicits {
     case Seq(obj, "not", property, subject) => Triple(obj, property, subject, false)
   }
 
+  implicit def string2knowledgeSet(s: String) = StatementInterpreter("tmp" + s.hashCode + "#", N3Parser.parse(s, prefixStore.prefixes), Seq())
+  
   implicit def string2queryTriple(s: String): QueryTriple = {
     def processToken(token: String) =
       if (token.startsWith("?")) VariableNode(token.substring(1)) else prefixStore(token)

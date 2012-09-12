@@ -2,7 +2,7 @@ package eu.semantiq.semblade
 
 import scala.collection.JavaConversions._
 
-class PrefixStore(prefixes: Map[String, String]) {
+class PrefixStore(val prefixes: Map[String, String]) {
   def apply(prefixedUri: String) = prefixedUri.split(":").toSeq match {
     case Seq(prefix, suffix) => UriNode(prefixes(prefix) + suffix)
   }

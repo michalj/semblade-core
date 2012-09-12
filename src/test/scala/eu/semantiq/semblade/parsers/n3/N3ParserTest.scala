@@ -6,7 +6,7 @@ import org.scalatest.matchers.ShouldMatchers
 
 class N3ParserTest extends FlatSpec with ShouldMatchers with BeforeAndAfterEach {
 
-  val parser = new N3Parser()
+  val parser = N3Parser
 
   "N3 Parser" should "parse basic set of triples with full URIs" in {
     // given

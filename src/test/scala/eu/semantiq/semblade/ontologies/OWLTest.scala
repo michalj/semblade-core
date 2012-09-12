@@ -13,7 +13,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
   feature("OWL defines owl:sameAs") {
     scenario("owl:sameAs is reflexive") {
       // given
-      val kb = base + "sample:Fafik rdf:type sample:Dog" !
+      val kb = base + "sample:Fafik rdf:type sample:Dog." !
       // when
       val actual = kb ? "?x owl:sameAs sample:Fafik"
       // then
@@ -22,8 +22,8 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
     scenario("owl:sameAs is transitive") {
       // given
       val kb = base +
-        "sample:Fafik owl:sameAs sample:DogOfAla" +
-        "sample:DogOfAla owl:sameAs sample:FavPetOfAla" !
+        "sample:Fafik owl:sameAs sample:DogOfAla." +
+        "sample:DogOfAla owl:sameAs sample:FavPetOfAla." !
       // when
       val actual = kb ? "sample:Fafik owl:sameAs ?x"
       // then
@@ -34,7 +34,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
     }
     scenario("owl:sameAs is symmetric") {
       // given
-      val kb = base + "sample:Germany owl:sameAs sample:Alemania" !
+      val kb = base + "sample:Germany owl:sameAs sample:Alemania." !
       // when
       val actual = kb ? "sample:Alemania owl:sameAs ?what"
       actual.toSet should be(Set(
@@ -48,8 +48,8 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
     scenario("owl:SymmetricProperty implies symmetric relationship") {
       // given
       val kb = base +
-        "sample:closeTo rdf:type owl:SymmetricProperty" +
-        "sample:London sample:closeTo sample:Paris" !
+        "sample:closeTo rdf:type owl:SymmetricProperty." +
+        "sample:London sample:closeTo sample:Paris." !
       // when
       val actual = kb ? "sample:Paris sample:closeTo ?where"
       // then
@@ -90,4 +90,39 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
   feature("OWL defines owl:equivalentProperty") {
     scenario("TODO") { pending }
   }
+  feature("OWL defines owl:AllDifferent") {
+    scenario("if collection of 2 is owl:AllDifferent then elements are owl:differentFrom each other") {
+      // given
+      val kb = base +
+        "sample:colors owl:sameAs (sample:black sample:white)." +
+        "sample:colors rdf:type owl:AllDifferent." !
+      // when
+        
+      kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
+      val actual = kb ? "?a owl:differentFrom ?b"
+      // then
+      actual.toSet should be(Set(
+        Map("a" -> prefixStore("sample:black"), "b" -> prefixStore("sample:white")),
+        Map("a" -> prefixStore("sample:white"), "b" -> prefixStore("sample:black"))))
+    }
+ 
+    scenario("if collection of 3 is owl:AllDifferent then elements are owl:differentFrom each other") {
+      // given
+      val kb = base +
+        "sample:colors owl:sameAs (sample:black sample:white sample:green)." +
+        "sample:colors rdf:type owl:AllDifferent." !
+      // when
+        
+      kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
+      val actual = kb ? "?a owl:differentFrom ?b"
+      // then
+      actual.toSet should be(Set(
+        Map("a" -> prefixStore("sample:black"), "b" -> prefixStore("sample:white")),
+        Map("a" -> prefixStore("sample:white"), "b" -> prefixStore("sample:black")),
+        Map("a" -> prefixStore("sample:green"), "b" -> prefixStore("sample:white")),
+        Map("a" -> prefixStore("sample:green"), "b" -> prefixStore("sample:black")),
+        Map("a" -> prefixStore("sample:black"), "b" -> prefixStore("sample:green")),
+        Map("a" -> prefixStore("sample:white"), "b" -> prefixStore("sample:green"))))
+    }
+ }
 }

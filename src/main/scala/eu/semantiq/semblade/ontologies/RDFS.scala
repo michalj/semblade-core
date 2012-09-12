@@ -41,4 +41,7 @@ object RDFS extends KnowledgeSet("http://www.w3.org/2000/01/rdf-schema#", List(
     List("?rest rdf:member ?a")),
   SimpleRule("rdf:ListEmpty",
     List("?list rdf:first rdf:nil", "?a ?anyProperty ?anySubject"),
-    List("?list not rdf:member ?a"))), List())
+    List("?list not rdf:member ?a")),
+  SimpleRule("rdf:NonMemberDifferentFromAll",
+    List("?list not rdf:member ?element", "?list rdf:first ?first", "?list rdf:rest ?rest"),
+    List("?element owl:differentFrom ?first", "?rest not rdf:member ?element"))), List())

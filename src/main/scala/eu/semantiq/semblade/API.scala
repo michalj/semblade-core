@@ -143,6 +143,4 @@ trait KnowledgeBase extends SelectableKnowledgeSource
   def infer: KnowledgeBase
   def ! = infer
   def +(knowledgeSet: KnowledgeSet) = tell(knowledgeSet)
-  def +(triple: Triple) = tell(KnowledgeSet("triple:" + triple.hashCode,
-    List(triple), List(), List()))
 }
