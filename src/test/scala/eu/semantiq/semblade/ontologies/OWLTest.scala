@@ -8,7 +8,7 @@ import org.scalatest.BeforeAndAfterEach
 class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
   def prefixStore = DefaultPrefixStore ++ Map(
     "sample" -> "http://semantiq.eu/ontologies/sample#")
-  val base = new MemoryKnowledgeBase() + RDFS + OWL + SEM
+  val base = new MemoryKnowledgeBase() + RDFS + OWL
 
   feature("OWL defines owl:sameAs") {
     scenario("owl:sameAs is reflexive") {
@@ -17,7 +17,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
       // when
       val actual = kb ? "?x owl:sameAs sample:Fafik"
       // then
-      actual should be(Seq(Map[String, UriNode]("x" -> "sample:Fafik")))
+      actual.toSet should be(Set(Map[String, UriNode]("x" -> "sample:Fafik")))
     }
     scenario("owl:sameAs is transitive") {
       // given
@@ -97,8 +97,6 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
         "sample:colors owl:sameAs (sample:black sample:white)." +
         "sample:colors rdf:type owl:AllDifferent." !
       // when
-
-      kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
       val actual = kb ? "?a owl:differentFrom ?b"
       // then
       actual.toSet should be(Set(

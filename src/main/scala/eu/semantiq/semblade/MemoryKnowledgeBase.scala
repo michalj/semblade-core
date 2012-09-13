@@ -27,7 +27,7 @@ class MemoryKnowledgeBase(
 
   def select(queryTriples: Seq[QueryTriple]) = query(dump, queryTriples, Map())
 
-  def dump: Iterable[Triple] = database.values.flatMap(ks => ks.triples) ++ inferred
+  def dump: Iterable[Triple] = (database.values.flatMap(ks => ks.triples) ++ inferred).toSet
 
   def infer = {
     def infer(knowledge: Set[Triple], rules: Iterable[Rule]): Set[Triple] = {
