@@ -6,7 +6,8 @@ import DefaultImplicits._
 object OWL extends KnowledgeSet("http://www.w3.org/2002/07/owl#", List(
   "owl:sameAs rdf:type owl:TransitiveProperty",
   "owl:sameAs rdf:type owl:SymmetricProperty",
-  "rdf:first rdf:type owl:FunctionalProperty"), List(
+  "rdf:first rdf:type owl:FunctionalProperty",
+  "owl:disjointWith rdf:type owl:SummetricProperty"), List(
   SimpleRule("owl:sameAsRefexivity",
     List("?a ?anyProperty ?anyObject"),
     List("?a owl:sameAs ?a")),
@@ -40,5 +41,8 @@ object OWL extends KnowledgeSet("http://www.w3.org/2002/07/owl#", List(
     List("?a not owl:differentFrom ?b")),
   SimpleRule("owl:AllDifferent",
     List("?list rdf:type owl:AllDifferent", "?list rdf:first ?first", "?list rdf:rest ?rest"),
-    List("?rest not rdf:member ?first", "?rest rdf:type owl:AllDifferent"))),
+    List("?rest not rdf:member ?first", "?rest rdf:type owl:AllDifferent")),
+  "owl:disjointWith" ~=
+    "?a rdf:type ?classA" :: "?b rdf:type ?classB" :: "?classA owl:disjointWith ?classB" >>>
+    "?a owl:differentFrom ?b"),
   List())

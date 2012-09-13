@@ -97,7 +97,7 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
         "sample:colors owl:sameAs (sample:black sample:white)." +
         "sample:colors rdf:type owl:AllDifferent." !
       // when
-        
+
       kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
       val actual = kb ? "?a owl:differentFrom ?b"
       // then
@@ -105,15 +105,12 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
         Map("a" -> prefixStore("sample:black"), "b" -> prefixStore("sample:white")),
         Map("a" -> prefixStore("sample:white"), "b" -> prefixStore("sample:black"))))
     }
- 
     scenario("if collection of 3 is owl:AllDifferent then elements are owl:differentFrom each other") {
       // given
       val kb = base +
         "sample:colors owl:sameAs (sample:black sample:white sample:green)." +
         "sample:colors rdf:type owl:AllDifferent." !
       // when
-        
-      kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
       val actual = kb ? "?a owl:differentFrom ?b"
       // then
       actual.toSet should be(Set(
@@ -124,5 +121,20 @@ class OWLTest extends FeatureSpec with ShouldMatchers with Implicits {
         Map("a" -> prefixStore("sample:black"), "b" -> prefixStore("sample:green")),
         Map("a" -> prefixStore("sample:white"), "b" -> prefixStore("sample:green"))))
     }
- }
+  }
+  feature("OWL defines owl:disjointWith") {
+    scenario("if two objects belong to two owl:disjointWith classes they are owl:differentFrom") {
+      // given
+      val kb = base +
+        "sample:Fafik rdf:type sample:Dog." +
+        "sample:KingsCross rdf:type sample:TrainStation." +
+        "sample:Dog owl:disjointWith sample:TrainStation." !
+
+      kb.dump.toSeq.sortBy(t => t.toString).map(t => println(t))
+      // when
+      val actual = kb ? "sample:Fafik owl:differentFrom ?a"
+      // then
+      actual.toSet should be(Set(Map("a" -> prefixStore("sample:KingsCross"))))
+    }
+  }
 }
