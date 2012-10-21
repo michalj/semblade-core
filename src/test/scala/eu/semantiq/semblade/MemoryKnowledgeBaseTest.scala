@@ -5,7 +5,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 import eu.semantiq.semblade.ontologies.RDFS
 
-class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
+class MemoryKnowledgeBaseTest extends FlatSpec with ShouldMatchers
   with BeforeAndAfterEach with Implicits {
   def prefixStore = DefaultPrefixStore ++ Map("sample" -> "http://semantiq.eu/ontologies/sample#")
   var kb: KnowledgeBase = _
@@ -58,5 +58,12 @@ class KnowledgeBaseTest extends FlatSpec with ShouldMatchers
     animals should have size (2)
     animals should contain(collection.Map[String, ConcreteNode]("pet" -> prefixStore("sample:aCat")))
     animals should contain(collection.Map[String, ConcreteNode]("pet" -> prefixStore("sample:anotherCat")))
+  }
+  
+  it should "do recursive describe" in {
+    // when
+    val aboutAla = kb describe "sample:Ala"
+    // then
+    aboutAla should contain(string2triple("sample:aCat rdf:type sample:Cat"))
   }
 }

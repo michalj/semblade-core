@@ -137,8 +137,12 @@ trait DumpableKnowledgeSource {
   def dump: Iterable[Triple]
 }
 
+trait DescriptiveKnowledgeSource {
+  def describe(node: ConcreteNode, level: Int = 1): Seq[Triple]
+}
+
 trait KnowledgeBase extends SelectableKnowledgeSource
-  with DumpableKnowledgeSource {
+  with DumpableKnowledgeSource with DescriptiveKnowledgeSource {
   def tell(knowledgeSet: KnowledgeSet): KnowledgeBase
   def infer: KnowledgeBase
   def ! = infer

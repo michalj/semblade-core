@@ -28,6 +28,16 @@ class MemoryKnowledgeBase(
   def select(queryTriples: Seq[QueryTriple]) = query(dump, queryTriples, Map())
 
   def dump: Iterable[Triple] = (database.values.flatMap(ks => ks.triples) ++ inferred).toSet
+  
+  def describe(node: ConcreteNode, level: Int = 1) = {
+    val description = select (Seq(QueryTriple(node, VariableNode("verb"), VariableNode("obj")))) map (r => Triple(node, r("verb"), r("obj"))) toSeq;
+    if (level > 0) {
+      val nodes = description map (_.obj) toSet;
+      description ++ (nodes flatMap (n => describe(n, level - 1)))
+    } else {
+      description
+    }
+  }
 
   def infer = {
     def infer(knowledge: Set[Triple], rules: Iterable[Rule]): Set[Triple] = {
