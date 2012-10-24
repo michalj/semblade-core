@@ -2,7 +2,7 @@ organization := "eu.semantiq"
 
 name := "semblade-core"
 
-version := "1.2-SNAPSHOT"
+version := "1.2"
 
 publishTo := Some(Resolver.file("Semblade Repository", new File("./releases")))
 
