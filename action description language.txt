@@ -1,0 +1,32 @@
+Akcja: Załóż konto
+------------------
+
+createAccount:
+	inputs:
+		?me hasEmail ?email.				// one satisfying value, all known values, all values
+		?me inRelationTo ?itunes.
+		?itunes usePassword ?password.
+	outputs:
+		?me hasAnAccount ?account.
+		?account accountOn <itunes>.
+		?account withPassword ?password.
+
+createPassword:
+	inputs:
+		?me inRelationTo ?service.
+	outputs:
+		?service usePassword ?password.
+
+watchAMovie(?title):
+	effects:
+		?me watchedAMovie ?title.
+
+Zadanie:
+--------
+
+Want:
+	?me watchedAMovie "Futurama".
+Don't want:
+	?me hasAnAccount ?account.
+	?account accountOn ?doggyWebSite.
+	?doggyWebSite oneOf [ <itunes>, ... ].

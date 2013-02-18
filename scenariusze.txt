@@ -1,0 +1,62 @@
+Scenariusz: Chcę pojechać metrem
+--------------------------------------------------
+
+//IOPE = Inputs Outputs Preconditions Effects
+
+Akcja: Przejście przez bramkę
+
+I = {  }
+
+P1 = { mam oyster, mam kredyt, bramka działa }
+E1 = { wchodzę, nie wiadomo, czy mam kredyt }
+O1 = { miałem kredyt, nie wiem, czy nadal mam, wszedłem }
+
+P2 = { mam oyster, mam kredyt, bramka nie działa }
+E2 = { nie wszedłem, mam kredyt }
+O2 = { miałem kredyt, mam kredyt, nie wszedłem }
+
+P3 = { mam oyster, nie mam kredytu }
+E3 = { nie wszedłem }
+O3 = { nie mam kredytu, nie wszedłem }
+
+Spostrzeżenia:
+
+Z "nie wszedłem", nie wynika, że "nie mam kredytu".
+Z "wiem że mam kredyt" i "nie wszedłem", wynika że "bramka jest zepsuta".
+
+Akcja: Sprawdzenie kredytu w automacie
+
+P = { mam oyster }
+O1 = { automat jest zepsuty }
+O2 = { znam swój kredyt }
+(...)
+
+Akcja: Dodanie kredytu w automacie
+
+I = { pin do karty }
+P1 = { mam kasę na karcie }
+E1 = {
+(...)
+
+Scenariusz: Chcę obejrzeć film
+
+Akcja: Oglądaj film
+
+I = { tytuł, dane do logowania }
+P = { }
+E = { obejrzałem film }
+O = { }
+
+Akcja: Załóż konto
+
+I = { email }
+P = { }
+E = { mam konto i zgodziłem się na warunki }
+O = { dane do logowania }
+
+Akcja: Wymyśl hasło
+
+I = { usługa }
+P = { }
+E = { }
+O = { hasło }
