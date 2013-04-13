@@ -1,6 +1,19 @@
 Akcja: Załóż konto
 ------------------
 
+findMovieService
+	before
+		?service provides ?movie
+		know(?movie)
+	after
+		know(?service)
+
+findMovieService:
+	inputs:
+		?movie
+	outputs:
+		?service provides ?movie
+
 createAccount:
 	inputs:
 		?me hasEmail ?email.				// one satisfying value, all known values, all values
@@ -30,3 +43,5 @@ Don't want:
 	?me hasAnAccount ?account.
 	?account accountOn ?doggyWebSite.
 	?doggyWebSite oneOf [ <itunes>, ... ].
+
+[action] ::= [ident]: <nl> [inputs]
